@@ -1,0 +1,11 @@
+{
+    "name": "2048",
+    "version": "1.0.0",
+    "description": "2048 Progressive Web App",
+    "author": "Chris Love",
+    "private": true,
+    "devDependencies": {
+        "grunt": "*",
+        "grunt-contrib-connect": "*"
+    }
+}
