@@ -3,12 +3,12 @@
 
 <head>
   <meta charset="utf-8">
-  <base href="/">
+  <base href="/2048_PWA/www/">
   <title>2048</title>
 
-  <link rel="stylesheet" href="www/style/main.css">
-  <link rel="shortcut icon" href="www/favicon.ico">
-  <link rel="manifest" href="www/manifest.json">
+  <link rel="stylesheet" href="style/main.css">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="manifest" href="manifest.json">
 
   <meta name="apple-mobile-web-app-title" content="2048 PWA">
 
@@ -19,16 +19,16 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-  <link rel="apple-touch-icon" href="www/meta/2048-logo-80x80.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="www/meta/2048-logo-152x152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="www/meta/2048-logo-180x180.png">
-  <link rel="apple-touch-icon" sizes="167x167" href="www/2048-logo-167x167.png">
+  <link rel="apple-touch-icon" href="meta/2048-logo-80x80.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="meta/2048-logo-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="meta/2048-logo-180x180.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="2048-logo-167x167.png">
 
   <meta name="application-name" content="2048" />
-  <meta name="msapplication-square70x70logo" content="www/meta/2048-logo-70x70.png" />
-  <meta name="msapplication-square150x150logo" content="www/meta/2048-logo-152x152.png" />
-  <meta name="msapplication-wide310x150logo" content="www/meta/2048-logo-310x150.png" />
-  <meta name="msapplication-square310x310logo" content="www/meta/2048-logo-310x310.png" />
+  <meta name="msapplication-square70x70logo" content="meta/2048-logo-70x70.png" />
+  <meta name="msapplication-square150x150logo" content="meta/2048-logo-152x152.png" />
+  <meta name="msapplication-wide310x150logo" content="meta/2048-logo-310x150.png" />
+  <meta name="msapplication-square310x310logo" content="meta/2048-logo-310x310.png" />
   <meta name="msapplication-TileColor" content="#ECC400" />
 
   <meta name="HandheldFriendly" content="True">
@@ -127,43 +127,31 @@
 
   <script>
     var scripts = [
-        "www/js/keyboard_input_manager.js",
-        "www/js/html_actuator.js",
-        "www/js/grid.js",
-        "www/js/tile.js",
-        "www/js/local_storage_manager.js",
-        "www/js/game_manager.js",
-        "www/js/application.js"
+        "js/keyboard_input_manager.js",
+        "js/html_actuator.js",
+        "js/grid.js",
+        "js/tile.js",
+        "js/local_storage_manager.js",
+        "js/game_manager.js",
+        "js/application.js"
       ],
       src,
       script,
       pendingScripts = [],
       firstScript = document.scripts[0];
-
     if (typeof Function.prototype.bind !== "function") {
-
-      scripts.unshift("www/js/polyfills/bind_polyfill.js");
-
+      scripts.unshift("js/polyfills/bind_polyfill.js");
     }
-
     if ("classList" in document.documentElement === false) {
-
-      scripts.unshift("www/js/polyfills/classlist_polyfill.js");
-
+      scripts.unshift("js/polyfills/classlist_polyfill.js");
     }
-
     if (!window.requestAnimationFrame) {
-
-      scripts.unshift("www/js/polyfills/animframe_polyfill.js");
-
+      scripts.unshift("js/polyfills/animframe_polyfill.js");
     }
-
     // Watch scripts load in IE
     function stateChange() {
       // Execute as many scripts in order as we can
-
       var pendingScript;
-
       while (pendingScripts[0] && pendingScripts[0].readyState == 'loaded') {
         pendingScript = pendingScripts.shift();
         // avoid future loading events from this script (eg, if src changes)
@@ -171,19 +159,14 @@
         // can't just appendChild, old IE bug if element isn't closed
         firstScript.parentNode.insertBefore(pendingScript, firstScript);
       }
-
     }
-
     // loop through our script urls
     while (src = scripts.shift()) {
-
       if ('async' in firstScript) { // modern browsers
-
         script = document.createElement('script');
         script.async = false;
         script.src = src;
         document.body.appendChild(script);
-
       } else if (firstScript.readyState) { // IE<10
         // create a script and add it to our todo pile
         script = document.createElement('script');
@@ -201,8 +184,8 @@
 
   <script>
     if ('serviceWorker' in navigator) 
-    {  
-      navigator.serviceWorker.register('www/sw.js')
+    {  
+      navigator.serviceWorker.register('sw.js')
       .then(function(registration)
       {
         console.log('SW reg successfull with scope: ',registration.scope);

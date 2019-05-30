@@ -25,8 +25,8 @@ self.addEventListener("install", function (event)
         });
 });
 
-self.addEventListener("activate", function (event) {
-
+self.addEventListener("activate", function (event) 
+{
     event.waitUntil(
 
         caches.keys().then(cacheNames => {
@@ -57,21 +57,4 @@ async function cacheFirst(req)
     const cachedResponse = await caches.match(req);
     return cachedResponse || fetch(req);
 }
-
-/* self.addEventListener("fetch", function (event) {
-    console.log('fetching..');
-    event.respondWith(
-
-        caches.match(event.request)
-        .then(function (response) {
-
-            if (response) {
-                return response;
-            }
-
-            return fetch(event.request);
-        })
-    );
-
-}); */
 
