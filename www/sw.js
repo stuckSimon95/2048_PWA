@@ -1,60 +1,103 @@
-var cacheList = [
-    "index.html",
-    "style/main.css",
-    "js/keyboard_input_manager.js",
-    "js/html_actuator.js",
-    "js/grid.js",
-    "js/tile.js",
-    "js/local_storage_manager.js",
-    "js/game_manager.js",
-    "js/application.js"
+const cacheName = 'v1';
+const cacheAssets = 
+[
+  "index.html",
+  "style/main.css",
+  "js/keyboard_input_manager.js",
+  "js/html_actuator.js",
+  "js/grid.js",
+  "js/tile.js",
+  "js/local_storage_manager.js",
+  "js/game_manager.js",
+  "js/application.js"
 ];
 
 /*  Service Worker Event Handlers */
 
-self.addEventListener("install", function (event) 
-{
+self.addEventListener('install', e => {
     console.log("Installing the service worker!");
 
-    self.skipWaiting();
-
-    caches.open('static')
-        .then(function(cache)
-        {
-            cache.addAll(cacheList);
-        });
+    e.waitUntil(
+      caches
+      .open(cacheName)
+      .then(cache => {
+        console.log('SW caching files');
+        cache.addAll(cacheAssets);
+      })
+      .then(() => self.skipWaiting())
+    );
 });
 
-self.addEventListener("activate", function (event) 
+self.addEventListener('activate', e =>
 {
-    event.waitUntil(
+  e.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cache => {
 
-        caches.keys().then(cacheNames => {
-          cacheNames.forEach(value => {
-            caches.delete(value);
-    
-          });
-    
-          console.log("service worker activated");
-    
-          return;
-    
+          if(cache !== cacheName) {
+            console.log('SW clearing old cache');
+            return caches.delete(cache);
+          }
         })
-    
       );
+    })
+  );
 
 });
 
-self.addEventListener("fetch", event => 
+self.addEventListener('fetch', e => 
 {
-    console.log('fetching..');
-    const req = event.request;
-    event.respondWith(cacheFirst(req));
+    console.log('SW fetching');
+    e.respondWith(
+      fetch(e.request)
+      .catch(() => caches.match(e.request)));
 });
 
-async function cacheFirst(req)
+self.addEventListener('push', event =>
 {
-    const cachedResponse = await caches.match(req);
-    return cachedResponse || fetch(req);
+  console.log(`[Service Worker] Push had this data: "${event.data.text()}"`);
+
+    try {
+        //        var episode = JSON.parse(event.data.text());
+        const title = event.data.text();
+        const options = {
+            body: 'Yay it works.',
+            icon: 'meta/2048-logo-144x144.png',
+            vibrate: [200, 100, 200, 100, 200, 100, 200],
+            actions: [{
+                    action: "ok",
+                    title: "Press OK",
+                    icon: 'meta/2048-logo-144x144.png'
+                }
+            ]
+        };
+
+        event.waitUntil(self.registration.showNotification(title, options));
+
+    } 
+    catch (e) 
+    {
+        console('invalid json - notification supressed');
+    }
+  
+});
+
+self.addEventListener('notificationclick', event => {
+  console.log('[Service Worker] Notification click Received. "${event}"');
+
+  if (event.action === "ok") {
+
+      notificationOk(event.notification);
+
+  }
+  event.notification.close();
+});
+
+function notificationOk(notification) {
+
+  console.log("notificationOk ");
+
+  clients.openWindow('/');
+
 }
-
